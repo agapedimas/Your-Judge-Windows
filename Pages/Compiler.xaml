@@ -1,0 +1,141 @@
+﻿<Page
+    x:Class="Your_Judge.Pages.Compiler"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Your_Judge.Pages"         
+    xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    NavigationCacheMode="Enabled"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid
+            Grid.Row="0" 
+            Style="{ThemeResource HeaderContainer}"
+            RowSpacing="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Grid.Row="0" 
+                Style="{ThemeResource HeaderText}" 
+                Margin="{ThemeResource HeaderMargin}"
+                >Compiler</TextBlock>
+
+            <muxc:InfoBar
+                Grid.Row="0"
+                x:Name="InfoBar"
+                HorizontalAlignment="Right"
+                Margin="0 0 30 -10"
+                >
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:StackedNotificationsBehavior x:Name="NotificationQueue" />
+                </interactivity:Interaction.Behaviors>
+            </muxc:InfoBar>
+        </Grid>
+        <Grid
+            Grid.Row="1"
+            Margin="{ThemeResource MainMargin}">
+            <Grid
+                ColumnSpacing="25"
+                Margin="0 -10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*" MaxWidth="400"/>
+                </Grid.ColumnDefinitions>
+                <TextBox 
+                    Grid.Column="0" 
+                    AcceptsReturn="True"
+                    TextWrapping="NoWrap" 
+                    FontFamily="Cascadia Mono" 
+                    Padding="15"
+                    IsColorFontEnabled="False"
+                    IsSpellCheckEnabled="False"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    IsEnabled="{x:Bind CodeEditor.IsLoading.Equals(x:False), Mode=OneWay}"
+                    Text="{x:Bind CodeEditor.Code, Mode=TwoWay}"
+                />
+                <Grid Grid.Column="1" RowSpacing="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button 
+                            x:Name="Button_Run" 
+                            Grid.Column="0" 
+                            HorizontalAlignment="Stretch" 
+                            Style="{ThemeResource AccentButtonStyle}"
+                            IsEnabled="{x:Bind CodeEditor.IsLoading.Equals(x:False), Mode=OneWay}">
+                            <Grid ColumnSpacing="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Grid.Column="0" Glyph="&#xf5b0;" FontSize="14"/>
+                                <TextBlock Grid.Column="1">Run</TextBlock>
+                            </Grid>
+                        </Button>
+                        <muxc:ProgressRing 
+                            x:Name="Loading" 
+                            Grid.Column="0" 
+                            Width="20" 
+                            Height="20" 
+                            IsActive="{x:Bind CodeEditor.IsLoading, Mode=OneWay}"/>
+                        <Button 
+                            x:Name="Button_Save" 
+                            Grid.Column="1" 
+                            HorizontalAlignment="Stretch"
+                            IsEnabled="{x:Bind CodeEditor.IsLoading.Equals(x:False), Mode=OneWay}">Save</Button>
+                    </Grid>
+                    <TextBlock Grid.Row="1" Margin="0 10 0 0" Style="{ThemeResource BodyStrongTextBlockStyle}">Input</TextBlock>
+                    <TextBox
+                        Grid.Row="2"
+                        AcceptsReturn="True"
+                        TextWrapping="NoWrap" 
+                        FontFamily="Cascadia Mono" 
+                        Padding="5"
+                        IsColorFontEnabled="False"
+                        IsSpellCheckEnabled="False"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                        IsEnabled="{x:Bind CodeEditor.IsLoading.Equals(x:False), Mode=OneWay}"
+                        Text="{x:Bind CodeEditor.Input, Mode=TwoWay}"
+                    />
+                    <TextBlock Grid.Row="3" Margin="0 10 0 0" Style="{ThemeResource BodyStrongTextBlockStyle}">Output</TextBlock>
+                    <TextBox
+                        Grid.Row="4" 
+                        AcceptsReturn="True"
+                        TextWrapping="NoWrap" 
+                        FontFamily="Cascadia Mono" 
+                        Padding="5"
+                        IsColorFontEnabled="False"
+                        IsSpellCheckEnabled="False"
+                        IsReadOnly="True"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                        Text="{x:Bind CodeEditor.Output, Mode=OneWay}"
+                    />
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

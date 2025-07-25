@@ -1,0 +1,133 @@
+﻿<Page
+    x:Class="Your_Judge.Pages.Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Your_Judge.Pages"    
+    xmlns:classes="using:Your_Judge.Classes"    
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"       
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <x:Double x:Key="SettingsCardSpacing">4</x:Double>
+        <Style x:Key="SettingsSectionHeaderTextBlockStyle"
+               BasedOn="{StaticResource BodyStrongTextBlockStyle}"
+               TargetType="TextBlock">
+            <Style.Setters>
+                <Setter Property="Margin" Value="1,30,0,6" />
+            </Style.Setters>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid
+            Grid.Row="0" 
+            Style="{ThemeResource HeaderContainer}">
+            <TextBlock
+                Style="{ThemeResource HeaderText}"
+                Margin="{ThemeResource HeaderMargin}"
+                Text="Settings"
+                />
+        </Grid>
+        <ScrollViewer 
+            Grid.Row="1"
+            >
+            <Grid Margin="0 -45 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MaxWidth="800"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel 
+                    Grid.Column="0"
+                    Margin="{ThemeResource MainMargin}"
+                    Spacing="{StaticResource SettingsCardSpacing}">
+                    
+                    <TextBlock Text="Challenges" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
+                    <controls:SettingsCard 
+                        HeaderIcon="{ui:FontIcon Glyph=&#xe8a5;}"
+                        Header="Default Editor">
+                        <Button Click="Click_DefaultEditor">Change</Button>
+                    </controls:SettingsCard>
+                    <controls:SettingsCard 
+                        HeaderIcon="{ui:FontIcon Glyph=&#xe9d5;}"
+                        Header="Progress">
+                        <Button Click="Click_ResetProgress">Reset</Button>
+                    </controls:SettingsCard>
+                    <muxc:InfoBar 
+                        Title="Your challenge code and progress are stored locally on this device and will not be synced to your other devices or account."
+                        IsOpen="True"
+                        Severity="Informational"
+                        IsClosable="False"/>
+
+                    <TextBlock Text="Compiler" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
+                    <controls:SettingsCard 
+                        HeaderIcon="{ui:FontIcon Glyph=&#xe943;}"
+                        Header="Programming Language"
+                        Description="Selected language will be used for both the compiler and challenges.">
+                        <Grid ColumnSpacing="7">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox x:Name="Select_ProgrammingLanguage" ItemsSource="{x:Bind programmingLanguages}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="classes:ProgrammingLanguage">
+                                        <TextBlock Text="{x:Bind Name}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+                    </controls:SettingsCard>
+                    <controls:SettingsCard 
+                        ActionIcon="{ui:FontIcon Glyph=&#xe8a7;}"
+                        HeaderIcon="{ui:FontIcon Glyph=&#xe756;}"
+                        Header="Git Repository"
+                        IsClickEnabled="True"
+                        Click="Click_CompilerRepository">
+                        <TextBlock>engineer-man/piston</TextBlock>
+                    </controls:SettingsCard>
+                    <controls:SettingsCard 
+                        HeaderIcon="{ui:FontIcon Glyph=&#xec05;}"
+                        Header="Status">
+                        <Grid ColumnSpacing="7">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0" Glyph="&#xf138;"/>
+                            <FontIcon Grid.Column="0" Glyph="&#xf13e;"/>
+                            <TextBlock Grid.Column="1">Up</TextBlock>
+                        </Grid>
+                    </controls:SettingsCard>
+
+                    <TextBlock Text="About App" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"/>
+                    <controls:SettingsCard 
+                        ActionIcon="{ui:FontIcon Glyph=&#xe8a7;}"
+                        HeaderIcon="{ui:FontIcon Glyph=&#xecaa;}"
+                        Header="Git Repository"
+                        IsClickEnabled="True"
+                        Click="Click_AppRepository"
+                        >
+                        <TextBlock>agapedimas/Judge-Windows</TextBlock>
+                    </controls:SettingsCard>
+                    <controls:SettingsCard 
+                        HeaderIcon="{ui:FontIcon Glyph=&#xe946;}"
+                        Header="Version"
+                        Description="1.0.0"/>
+                    <controls:SettingsCard 
+                        HeaderIcon="{ui:FontIcon Glyph=&#xe8a5;}"
+                        Header="Copyright"
+                        Description="© 2025 Agape Dimas. All rights reserved."/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -1,0 +1,297 @@
+﻿<Page
+    x:Class="Your_Judge.Pages.Code"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Your_Judge.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:behaviors="using:CommunityToolkit.WinUI.Behaviors"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"   
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded"
+    SizeChanged="Page_SizeChanged">
+    <Page.Resources>
+        <CollectionViewSource x:Name="Collection_Result" IsSourceGrouped="False" Source="{x:Bind SelectedChallenge.Results, Mode=OneWay}"/>
+        <DataTemplate x:Key="Layout_Problem" x:DataType="local:CodeVisual">
+            <ScrollViewer CanContentRenderOutsideBounds="True" VerticalScrollBarVisibility="Visible">
+                    <ScrollViewer.RenderTransform>
+                        <TranslateTransform x:Name="ProblemTransform" Y="0"/>
+                    </ScrollViewer.RenderTransform>
+                    <WebView 
+                        DefaultBackgroundColor="Transparent"
+                        VerticalAlignment="Top"
+                        Loaded="WebView_Loaded"
+                    />
+            </ScrollViewer>
+        </DataTemplate>
+        <DataTemplate x:Key="Layout_Answer" x:DataType="local:CodeVisual">
+            <Grid ColumnSpacing="25">
+                <Grid.Resources>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="275"/>
+                </Grid.ColumnDefinitions>
+                <TextBox 
+                    x:Name="Editor" 
+                    Grid.Column="0" 
+                    AcceptsReturn="True"
+                    TextWrapping="NoWrap" 
+                    FontFamily="Cascadia Mono" 
+                    Padding="15"
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    IsColorFontEnabled="False"
+                    IsSpellCheckEnabled="False"
+                    Text="{x:Bind Challenge.Code, Mode=TwoWay}"
+                    IsEnabled="{x:Bind IsEditorEnabled, Mode=OneWay}"
+                />
+                <Grid Grid.Column="1" RowSpacing="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Style="{ThemeResource BodyStrongTextBlockStyle}" Margin="0 0 0 -5">File Path</TextBlock>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{x:Bind Challenge.FileName, Mode=OneWay}" MaxLines="2" TextTrimming="CharacterEllipsis"/>
+                        <HyperlinkButton x:Name="Button_SelectFile" Click="Click_SelectFile" Grid.Column="1" Padding="6 0 6 2" Content="{x:Bind SelectFileButtonText, Mode=OneWay}" IsEnabled="{x:Bind IsEditorEnabled, Mode=OneWay}"/>
+                    </Grid>
+                    <Grid Grid.Row="2" ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="Button_Submit" Click="Click_Submit" Grid.Column="0" HorizontalAlignment="Stretch" Style="{ThemeResource AccentButtonStyle}" IsEnabled="{x:Bind IsEditorEnabled, Mode=OneWay}">Submit</Button>
+                        <Button x:Name="Button_Save" Click="Click_Save" Grid.Column="1" HorizontalAlignment="Stretch" IsEnabled="{x:Bind IsEditorEnabled, Mode=OneWay}">Save</Button>
+                    </Grid>
+                    <Grid Grid.Row="3" Margin="0 10 0 -10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{ThemeResource BodyStrongTextBlockStyle}">Result</TextBlock>
+                        <HyperlinkButton x:Name="Button_ClearResult" Click="Click_ClearResult" Grid.Column="1" Margin="0 -2 0 -5" Content="Clear" Padding="6 0 6 2" IsEnabled="{x:Bind IsEditorEnabled, Mode=OneWay}"/>
+                    </Grid>
+                    <ListView Grid.Row="4" ItemsSource="{Binding Source={StaticResource Collection_Result}}" SelectionMode="None" Margin="-15 0 -15 -30" Padding="15 0 15 30">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:ChallengeResult">
+                                <ListViewItem Padding="0" Margin="0 10 0 0">
+                                    <Grid Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderThickness="1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" CornerRadius="5">
+                                        <Grid Padding="18 13" Background="{x:Bind Background, Mode=OneWay}" CornerRadius="5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock FontSize="14" FontWeight="Bold" Text="CASE #"/>
+                                                    <TextBlock FontSize="14" FontWeight="Bold" Text="{x:Bind Index}"/>
+                                                </StackPanel>
+                                                <TextBlock FontSize="24" FontWeight="Black" Text="{x:Bind Title, Mode=OneWay}" Margin="0 -3 0 0"/>
+                                            </StackPanel>
+                                            <Grid Grid.Column="1" Background="{x:Bind Foreground, Mode=OneWay}" Width="35" Height="35" CornerRadius="35"/>
+                                            <FontIcon Grid.Column="1" Glyph="{x:Bind Icon, Mode=OneWay}" Foreground="{x:Bind Background, Mode=OneWay}" RenderTransformOrigin="0.465, 0.545">
+                                                <FontIcon.RenderTransform>
+                                                    <ScaleTransform ScaleX="2" ScaleY="2"/>
+                                                </FontIcon.RenderTransform>
+                                            </FontIcon>
+                                            <muxc:ProgressRing Grid.Column="1" IsActive="{x:Bind IsLoading, Mode=OneWay}" Width="35" Height="35" Margin="0 0 2 0"/>
+                                        </Grid>
+                                        <Button Click="Click_ShowError" Visibility="{x:Bind ErrorButtonVisibility, Mode=OneWay}" Tag="{x:Bind}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" BorderThickness="0" Opacity="0.5"/>
+                                    </Grid>
+                                </ListViewItem>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid
+            Grid.Row="0" 
+            Style="{ThemeResource HeaderContainer}"
+            RowSpacing="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid 
+                Grid.Row="0"
+                Margin="{ThemeResource HeaderMargin}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid 
+                    Grid.Column="0"
+                    >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.Row="0"
+                        Text="{x:Bind SelectedChallenge.Topic}"
+                        FontSize="15" FontWeight="SemiBold" 
+                        TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" 
+                        CharacterSpacing="30" Opacity="0.6"
+                        Margin="0 10 0 -5"
+                        />
+                    <TextBlock
+                        Grid.Row="1" 
+                        Style="{ThemeResource HeaderText}" 
+                        Text="{x:Bind SelectedChallenge.Name}"
+                        FontWeight="Bold"
+                        />
+                    <Grid 
+                        Grid.Row="2" 
+                        ColumnSpacing="10"
+                        >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0" Background="{ThemeResource SystemRevealListLowColor}" Width="24" Height="24" CornerRadius="24">
+                            <Image Width="24" Height="24" Source="{x:Bind SelectedChallenge.Author.Avatar}" Stretch="Fill" ImageFailed="Image_Failed"/>
+                        </Grid>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0 10" Spacing="10">
+                            <TextBlock Text="{x:Bind SelectedChallenge.Author.Nickname}" FontSize="16"/>
+                            <TextBlock Text="•" FontSize="16" Opacity="0.6"/>
+                            <TextBlock Text="{x:Bind SelectedChallenge.Time}" FontSize="16" Opacity="0.6"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <StackPanel 
+                    Grid.Column="1"
+                    VerticalAlignment="Top"
+                    Margin="0 15 0 0"
+                    Orientation="Horizontal"
+                    Visibility="{x:Bind Visual.LongButtonsVisibility, Mode=OneWay}"
+                    >
+                    <Button x:Name="Button_NewWindow" Height="35" Margin="10 0 0 0" Click="Click_NewWindow" ToolTipService.ToolTip="{x:Bind Text_NewWindow.Text}" ToolTipService.Placement="Bottom">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xe8a7;" FontSize="14"/>
+                            <TextBlock x:Name="Text_NewWindow" Margin="10 0 0 0" Visibility="{x:Bind Visual.ButtonLabelVisibility, Mode=OneWay}">Open in New Window</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="Button_DefaultEditor" Height="35" Margin="10 0 0 0" Click="Click_DefaultEditor" ToolTipService.ToolTip="{x:Bind Text_DefaultEditor.Text}" ToolTipService.Placement="Bottom" Visibility="{x:Bind Visual.EditButtonVisibility, Mode=OneWay}">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xe8a5;" FontSize="14"/>
+                            <TextBlock x:Name="Text_DefaultEditor" Margin="10 0 0 0" Visibility="{x:Bind Visual.ButtonLabelVisibility, Mode=OneWay}">Edit in Default Editor</TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="Button_CopyLink" Height="35" Margin="10 0 0 0" Click="Click_CopyLink" ToolTipService.ToolTip="{x:Bind Text_CopyLink.Text}" ToolTipService.Placement="Bottom">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xe71b;" FontSize="14"/>
+                            <TextBlock x:Name="Text_CopyLink" Margin="10 0 0 0" Visibility="{x:Bind Visual.ButtonLabelVisibility, Mode=OneWay}">Copy Link</TextBlock>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <Button 
+                    Grid.Column="1" 
+                    VerticalAlignment="Top"
+                    Margin="0 15 0 0"
+                    Height="35"
+                    Visibility="{x:Bind Visual.CompactButtonsVisibility, Mode=OneWay}"
+                    ToolTipService.ToolTip="Actions"
+                    >
+                    <Button.Flyout>
+                        <MenuFlyout Placement="Bottom">
+                            <MenuFlyoutItem Icon="{ui:FontIcon Glyph=&#xe8a7;}" Text="{x:Bind Text_NewWindow.Text}" Click="Click_NewWindow"/>
+                            <MenuFlyoutItem Icon="{ui:FontIcon Glyph=&#xe8a5;}" Text="{x:Bind Text_DefaultEditor.Text}" Click="Click_DefaultEditor" Visibility="{x:Bind Visual.EditButtonVisibility, Mode=OneWay}"/>
+                            <MenuFlyoutItem Icon="{ui:FontIcon Glyph=&#xe71b;}" Text="{x:Bind Text_CopyLink.Text}" Click="Click_CopyLink"/>
+                        </MenuFlyout>
+                    </Button.Flyout>
+                    <FontIcon Glyph="&#xe712;"/>
+                </Button>
+            </Grid>
+            <muxc:InfoBar
+                Grid.Row="0"
+                x:Name="InfoBar"
+                HorizontalAlignment="Right"
+                Margin="30 15 30 0"
+                >
+                <interactivity:Interaction.Behaviors>
+                    <behaviors:StackedNotificationsBehavior x:Name="NotificationQueue" />
+                </interactivity:Interaction.Behaviors>
+            </muxc:InfoBar>
+        </Grid>
+        <Grid
+            Grid.Row="1">
+            <Grid 
+                Margin="0 30 30 30"
+                Visibility="{x:Bind Visual.ComfortLayoutVisibility, Mode=OneWay}"
+                >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.15*" MaxWidth="1000"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid
+                    Grid.Column="0"
+                    Margin="30 -40 0 -30"
+                    CornerRadius="1">
+                    <Frame 
+                        Margin="0 10 0 0"
+                        ContentTemplate="{StaticResource Layout_Problem}" 
+                        Content="{x:Bind Visual, Mode=OneWay}"/>
+                </Grid>
+                <muxc:ProgressRing Grid.Column="0" IsActive="{x:Bind Visual.IsFetching, Mode=OneWay}" Width="50" Height="50" Margin="10 -100 0 0"/>
+                <Grid Grid.Column="1" Width="1" Margin="0 -30 30 0" Background="{ThemeResource SystemRevealListLowColor}"/>
+                <Frame
+                    Grid.Column="2"
+                    Margin="0 -30 0 0"
+                    ContentTemplate="{StaticResource Layout_Answer}" 
+                    Content="{x:Bind Visual, Mode=OneWay}" />
+            </Grid>
+            <Grid
+                Margin="0 -10 0 0"
+                Visibility="{x:Bind Visual.CompactLayoutVisibility, Mode=OneWay}">
+                <Pivot>
+                    <Pivot.Resources>
+                        <Style TargetType="PivotHeaderItem" BasedOn="{StaticResource PivotHeaderItemChallenge}">
+                            <Setter Property="Margin" Value="20 0 -20 15"/>
+                        </Style>
+                    </Pivot.Resources>
+                    <PivotItem Header="Problem">
+                        <Grid
+                            Margin="20 -12 -13 0"
+                            CornerRadius="1">
+                            <Frame
+                                ContentTemplate="{StaticResource Layout_Problem}" 
+                                Content="{x:Bind Visual, Mode=OneWay}"
+                                Margin="0 20 0 0"/>
+                            <muxc:ProgressRing IsActive="{x:Bind Visual.IsFetching, Mode=OneWay}" Width="50" Height="50" Margin="-30 -50 0 0"/>
+                        </Grid>
+                    </PivotItem>
+                    <PivotItem Header="Answer">
+                        <Frame 
+                            Margin="20 10 20 30"
+                            ContentTemplate="{StaticResource Layout_Answer}" 
+                            Content="{x:Bind Visual, Mode=OneWay}"/>
+                    </PivotItem>
+                </Pivot>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

@@ -1,0 +1,104 @@
+﻿<Page
+    x:Class="Your_Judge.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Your_Judge"
+    xmlns:classes="using:Your_Judge.Classes"
+    xmlns:pages="using:Your_Judge.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+    mc:Ignorable="d"
+    muxc:BackdropMaterial.ApplyToRootOrPageBackground="True">
+    <Page.Resources>
+        <Storyboard x:Name="TitleBarAnimation">
+            <DoubleAnimation x:Name="TitleBarAnimationKey" Duration="0:0:0.4" From="0" To="0" Storyboard.TargetName="TitleBarTransform" Storyboard.TargetProperty="X">
+                <DoubleAnimation.EasingFunction>
+                    <ExponentialEase Exponent="8" EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <classes:VisibilityByString x:Key="VisibilityByString" />
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="TitleBar" Background="Transparent" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="TitleBarTransform" X="0"/>
+            </Grid.RenderTransform>
+            <Image 
+                x:Name="Image_AppIcon"
+                Grid.Column="1"
+                Source="Assets/StoreLogo.png"
+                HorizontalAlignment="Left" 
+                Width="16" 
+                Height="16"/>
+            <TextBlock 
+                x:Name="Text_AppTitle"
+                Grid.Column="3"
+                Text="Your Judge" 
+                Style="{StaticResource CaptionTextBlockStyle}"
+                VerticalAlignment="Center"/>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button 
+                x:Name="Button_Back"
+                Grid.Column="1" 
+                Background="Transparent" 
+                BorderThickness="0" Width="33" Height="33" 
+                Visibility="Collapsed"
+                Padding="8">
+                <muxc:AnimatedIcon x:Name="SearchAnimatedIcon">
+                    <muxc:AnimatedIcon.Source>
+                        <animatedvisuals:AnimatedBackVisualSource/>
+                    </muxc:AnimatedIcon.Source>
+                    <muxc:AnimatedIcon.FallbackIconSource>
+                        <muxc:SymbolIconSource Symbol="Find"/>
+                    </muxc:AnimatedIcon.FallbackIconSource>
+                </muxc:AnimatedIcon>
+            </Button>
+        </Grid>
+
+        <muxc:NavigationView 
+            Grid.Row="1"
+            x:Name="Navigation"
+            SelectionChanged="Navigation_SelectionChanged"
+            ItemInvoked="Navigation_ItemInvoked"
+            IsBackButtonVisible="Collapsed"
+            IsPaneToggleButtonVisible="False"
+            CompactModeThresholdWidth="0"
+            ExpandedModeThresholdWidth="800">
+            <muxc:NavigationView.AutoSuggestBox>
+                <AutoSuggestBox
+                    x:Name="Search"
+                    PlaceholderText="Search"
+                >
+                    <AutoSuggestBox.ItemTemplate>
+                        <DataTemplate x:DataType="pages:Challenge">
+                            <StackPanel Spacing="0" Padding="5 10">
+                                <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Visibility="{x:Bind Name, Converter={StaticResource VisibilityByString}}"/>
+                                <TextBlock Text="{x:Bind Topic}" FontWeight="SemiBold" Opacity="0.5" TextTrimming="CharacterEllipsis" Visibility="{x:Bind Topic, Converter={StaticResource VisibilityByString}}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </AutoSuggestBox.ItemTemplate>
+                </AutoSuggestBox>
+            </muxc:NavigationView.AutoSuggestBox>
+            <Frame x:Name="Frame"/>
+        </muxc:NavigationView>
+    </Grid>
+</Page>

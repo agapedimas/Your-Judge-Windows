@@ -1,0 +1,104 @@
+﻿<Page
+    x:Class="Your_Judge.Pages.Help"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Your_Judge.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"       
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <CollectionViewSource x:Name="Collection_Administrator" IsSourceGrouped="False" />
+        <CollectionViewSource x:Name="Collection_Reference" IsSourceGrouped="False" />
+        <x:Double x:Key="SettingsCardSpacing">4</x:Double>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid
+            Grid.Row="0" 
+            Style="{ThemeResource HeaderContainer}">
+            <TextBlock
+                Style="{ThemeResource HeaderText}"
+                Margin="{ThemeResource HeaderMargin}"
+                Text="Help"
+                />
+        </Grid>
+        <ScrollViewer 
+            Grid.Row="1"
+            >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MaxWidth="800"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel 
+                    Grid.Column="0"
+                    Margin="{ThemeResource MainMargin}"
+                    Spacing="{StaticResource SettingsCardSpacing}">
+                    <win:StackPanel.ChildrenTransitions>
+                        <win:EntranceThemeTransition FromVerticalOffset="50" />
+                        <win:RepositionThemeTransition IsStaggeringEnabled="False" />
+                    </win:StackPanel.ChildrenTransitions>
+                    <controls:SettingsExpander
+                        Header="Administrators"
+                        HeaderIcon="{ui:FontIcon Glyph=&#xe716;}"
+                        IsExpanded="True"
+                        ItemsSource="{x:Bind Collection_Administrator.View}">
+                        <controls:SettingsExpander.ItemTemplate>
+                            <DataTemplate x:DataType="local:User">
+                                <controls:SettingsCard
+                                    IsClickEnabled="True"
+                                    Click="Click_Administrator"
+                                    ActionIcon="{ui:FontIcon Glyph=&#xe8a7;}"
+                                    Tag="{x:Bind}"
+                                    >
+                                    <controls:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <Grid Width="32" Height="32" CornerRadius="32">
+                                                <Image Source="{x:Bind Avatar}" ImageFailed="Image_Failed"/>
+                                            </Grid>
+                                            <TextBlock Text="{x:Bind Nickname}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </controls:SettingsCard.Header>
+                                </controls:SettingsCard>
+                            </DataTemplate>
+                        </controls:SettingsExpander.ItemTemplate>
+                    </controls:SettingsExpander>
+                    <controls:SettingsExpander
+                        Header="References"
+                        HeaderIcon="{ui:FontIcon Glyph=&#xe8f1;}"
+                        IsExpanded="True"
+                        ItemsSource="{x:Bind Collection_Reference.View}">
+                        <controls:SettingsExpander.ItemTemplate>
+                            <DataTemplate x:DataType="local:Reference">
+                                <controls:SettingsCard
+                                    IsClickEnabled="True"
+                                    Click="Click_Reference"
+                                    ActionIcon="{ui:FontIcon Glyph=&#xe8a7;}"
+                                    Tag="{x:Bind}"
+                                    >
+                                    <controls:SettingsCard.Header>
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <Grid Width="25" Height="25">
+                                                <Image Source="{x:Bind Icon}" Stretch="Uniform"/>
+                                            </Grid>
+                                            <TextBlock Text="{x:Bind Name}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </controls:SettingsCard.Header>
+                                </controls:SettingsCard>
+                            </DataTemplate>
+                        </controls:SettingsExpander.ItemTemplate>
+                    </controls:SettingsExpander>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>
